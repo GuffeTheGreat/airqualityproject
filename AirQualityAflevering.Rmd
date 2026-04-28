@@ -121,19 +121,93 @@ summary(dataframeco$temperature)
 
 
 ```{r}
-  
- dataframeco$date <- as.Date(dataframeco$date, "%m/%d/%Y")
- boxplot(dataframeco$co,dataframeco$date, col = "Pink")
- plot(dataframeco$date,dataframeco$co, xlab = "Days Since 10/03/2004")
- boxplot(dataframeco$date,cycle(dataframeco$co), xlab = "Days Since 10/03/2004")
 
 hist(dataframeco$co)
 
+boxplot(dataframeco$co ~ dataframeco$dayssince, xlab = "Weeks since Start")
+
+hist(dataframenox$nox)
+
+boxplot(dataframenox$nox ~ dataframenox$dayssince, xlab = "Weeks since Start")
+
+hist(dataframenox$dayssince)
+
+boxplot(dataframenox$temperature ~ dataframenox$dayssince, xlab = "Weeks since Start")
+
+hist(dataframeco$temperature)
+
+boxplot(dataframeco$temperature ~ dataframeco$dayssince, xlab = "Weeks since Start")
+ 
+
+
 ```
-  
+
+#  3. Outlier detection
   
   
 ```{r}
+  boxplot(dataframeco$co)
+  boxplot.stats(dataframeco$co)
+```
+
+#  4. Correlation analysis
+
+```{r}
+
+
+cor(dataframeco$time,dataframeco$co)
+
+plot(dataframeco$time,dataframeco$co)
 
 ```
 
+#  5. Statistical testing
+
+```{r}
+
+
+rhdataframeco <- data.frame(
+  id = dataframeco$id,
+  date = dataframeco$date,
+  dayssince = dataframeco$dayssince,
+  time = dataframeco$time,
+  co = dataframeco$co,
+  temperature = dataframeco$temperature
+)
+
+rhdataframeco <- rhdataframeco[rhdataframeco$time >= 7, ]
+rhdataframeco <- rhdataframeco[rhdataframeco$time <= 18, ]
+rhdataframeco <- rhdataframeco[rhdataframeco$time != 10, ]
+rhdataframeco <- rhdataframeco[rhdataframeco$time != 11, ]
+rhdataframeco <- rhdataframeco[rhdataframeco$time != 12, ]
+rhdataframeco <- rhdataframeco[rhdataframeco$time != 13, ]
+rhdataframeco <- rhdataframeco[rhdataframeco$time != 14, ]
+rhdataframeco <- rhdataframeco[rhdataframeco$time != 15, ]
+
+ohdataframeco <- data.frame(
+  id = dataframeco$id,
+  date = dataframeco$date,
+  dayssince = dataframeco$dayssince,
+  time = dataframeco$time,
+  co = dataframeco$co,
+  temperature = dataframeco$temperature
+)
+
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 6, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 7, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 8, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 9, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 10, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 11, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 12, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 13, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 14, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 15, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 16, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 17, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 18, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 19, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 20, ]
+ohdataframeco <- ohdataframeco[ohdataframeco$time != 21, ]
+
+```

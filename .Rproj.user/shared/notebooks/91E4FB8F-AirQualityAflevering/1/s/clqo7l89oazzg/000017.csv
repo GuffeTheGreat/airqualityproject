@@ -1,2 +1,0 @@
-"0","  "
-"0"," plot(dataframeco$dayssince,dataframeco$co, xlab = ""Days Since 10/03/2004"")"

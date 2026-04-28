@@ -3,7 +3,3 @@
 "0","dataframenox$time <- gsub("".00.00"", """", dataframenox$time)"
 "0","dataframenox$time <- as.numeric(dataframenox$time)"
 "0",""
-"0","dataframeco$date <- as.POSIXct(dataframeco$date,format= ""%Y-%m-%d"")"
-"0",""
-"0",""
-"0",""
