@@ -14,7 +14,7 @@ data <- read.table("AirQualityUCI.csv", header = TRUE, sep = ";",dec = ",")
 
 ```
 
-Construct a dataframe with relevant data.
+Construct dataframes with relevant data.
 ```{r}
 dataframeco <- data.frame(
   id = c(0:9470),
@@ -33,6 +33,14 @@ dataframenox <- data.frame(
   noxgt = data$NOx.GT.,
   temperature = data$T
 )
+
+dataframeno2 <- data.frame(
+  id = c(0:9470),
+  date = data$Date,
+  time = data$Time,
+  no2gt = data$NO2.GT.,
+  temperature = data$T
+)
 ```
 
 Remove all the data with Not Assigned values.
@@ -40,10 +48,15 @@ Remove all the data with Not Assigned values.
 ```{r}
  dataframeco <- dataframeco[dataframeco$time >= 0, ] 
  dataframenox <- dataframenox[dataframenox$time >= 0, ] 
+ dataframeno2 <- dataframeno2[dataframeno2$time >= 0, ] 
+ 
  dataframeco <- dataframeco[dataframeco$cogt != -200.0, ]
  dataframenox <- dataframenox[dataframenox$noxgt != -200.0, ]
+ dataframeno2 <- dataframeno2[dataframeno2$no2gt != -200.0, ]
+ 
  dataframeco <- dataframeco[dataframeco$temperature != -200.0, ]
  dataframenox <- dataframenox[dataframenox$temperature != -200.0, ]
+ dataframeno2 <- dataframeno2[dataframeno2$temperature != -200.0, ]
 ```
 
 Derive Additional Variable "Days Since". That will denote days since data observation begun
@@ -55,7 +68,7 @@ Derive Additional Variable "Days Since". That will denote days since data observ
    for (i in 1:nrow(dataframeco)) {
      date2string <- dataframeco$date[i]
      date2 <-  strptime(as.character(date2string), "%d/%m/%Y")
-     results[i] <-  difftime(date2,date1, units = "weeks")
+     results[i] <-  difftime(date2,date1, units = "days")
    }
    dataframeco$dayssince <- round(results, digits = 0)
    
@@ -63,7 +76,7 @@ Derive Additional Variable "Days Since". That will denote days since data observ
    for (i in 1:nrow(dataframenox)) {
      date2string <- dataframenox$date[i]
      date2 <-  strptime(as.character(date2string), "%d/%m/%Y")
-     results[i] <-  difftime(date2,date1, units = "weeks")
+     results[i] <-  difftime(date2,date1, units = "days")
    }
    dataframenox$dayssince <- round(results, digits = 0)
 ```
@@ -75,6 +88,8 @@ dataframeco$time <- gsub(".00.00", "", dataframeco$time)
 dataframeco$time <- as.numeric(dataframeco$time)
 dataframenox$time <- gsub(".00.00", "", dataframenox$time)
 dataframenox$time <- as.numeric(dataframenox$time)
+dataframeno2$time <- gsub(".00.00", "", dataframeno2$time)
+dataframeno2$time <- as.numeric(dataframeno2$time)
 
 ```
   
@@ -122,32 +137,73 @@ summary(dataframeco$temperature)
 
 ```{r}
 
-hist(dataframeco$co)
+df_list <- list(
+  co = list(df = dataframeco, pollutant = "cogt", temp = "temperature", name = "CO"),
+  nox = list(df = dataframenox, pollutant = "noxgt", temp = "temperature", name = "NOx")
+)
 
-boxplot(dataframeco$co ~ dataframeco$dayssince, xlab = "Weeks since Start")
-
-hist(dataframenox$nox)
-
-boxplot(dataframenox$nox ~ dataframenox$dayssince, xlab = "Weeks since Start")
-
-hist(dataframenox$dayssince)
-
-boxplot(dataframenox$temperature ~ dataframenox$dayssince, xlab = "Weeks since Start")
-
-hist(dataframeco$temperature)
-
-boxplot(dataframeco$temperature ~ dataframeco$dayssince, xlab = "Weeks since Start")
+for (i in names(df_list)) {
+  df <- df_list[[i]]$df
+  pollutant <- df_list[[i]]$pollutant
+  temp <- df_list[[i]]$temp
+  name <- df_list[[i]]$name
+  
+  df$date <- as.Date("2004-03-10") + df$dayssince
+  df$week_start <- as.Date(cut(df$date, "week"))
+  
+  
+  hist(df[[pollutant]], 
+       xlab = paste(name, "Concentration (µg/m³)"), 
+       col = "steelblue",
+       main = paste("Distribution of", name),
+       breaks = 20)
+  
+  boxplot(df[[pollutant]] ~ df$week_start,
+          xlab = "",
+          ylab = paste(name, "Concentration (µg/m³)"),
+          main = paste("Weekly", name, "Distribution"),
+          col = "steelblue",
+          las = 2,
+          cex.axis = 0.7)
+  title(xlab = "Week Starting Date", line = 5)
+  
+  hist(df[[temp]], 
+       xlab = "Temperature (°C)", 
+       col = "coral",
+       main = paste("Distribution of Temperature (", name, ")", sep = ""),
+       breaks = 20)
+  
+  boxplot(df[[temp]] ~ df$week_start,
+          xlab = "",
+          ylab = "Temperature (°C)",
+          main = paste("Weekly Temperature Distribution (", name, ")", sep = ""),
+          col = "coral",
+          las = 2,
+          cex.axis = 0.7)
+  title(xlab = "Week Starting Date", line = 5)
+  
+}
  
-
-
 ```
 
 #  3. Outlier detection
   
   
 ```{r}
-  boxplot(dataframeco$co)
-  boxplot.stats(dataframeco$co)
+
+boxplot(dataframeco$co,horizontal = TRUE,
+        main = "CO Concentration Distribution",
+        xlab = "CO Concentration (µg/m³)",
+        ylab = "",
+        col = "steelblue",
+        border = "darkblue",
+        notch = TRUE,
+        outpch = 16,
+        outcol = "red",
+        outcex = 1)
+
+boxplot.stats(dataframeco$co)
+
 ```
 
 #  4. Correlation analysis
@@ -164,8 +220,6 @@ plot(dataframeco$time,dataframeco$co)
 #  5. Statistical testing
 
 ```{r}
-
-
 rhdataframeco <- data.frame(
   id = dataframeco$id,
   date = dataframeco$date,
@@ -175,14 +229,12 @@ rhdataframeco <- data.frame(
   temperature = dataframeco$temperature
 )
 
-rhdataframeco <- rhdataframeco[rhdataframeco$time >= 7, ]
-rhdataframeco <- rhdataframeco[rhdataframeco$time <= 18, ]
-rhdataframeco <- rhdataframeco[rhdataframeco$time != 10, ]
-rhdataframeco <- rhdataframeco[rhdataframeco$time != 11, ]
-rhdataframeco <- rhdataframeco[rhdataframeco$time != 12, ]
-rhdataframeco <- rhdataframeco[rhdataframeco$time != 13, ]
-rhdataframeco <- rhdataframeco[rhdataframeco$time != 14, ]
-rhdataframeco <- rhdataframeco[rhdataframeco$time != 15, ]
+for (x in 0:24) {
+  if ((x >= 7 && x <= 9) || (x >= 16 && x <= 18)) {
+  } else {
+ rhdataframeco <- rhdataframeco[rhdataframeco$time != x, ] 
+  }
+} 
 
 ohdataframeco <- data.frame(
   id = dataframeco$id,
@@ -193,21 +245,92 @@ ohdataframeco <- data.frame(
   temperature = dataframeco$temperature
 )
 
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 6, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 7, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 8, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 9, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 10, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 11, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 12, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 13, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 14, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 15, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 16, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 17, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 18, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 19, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 20, ]
-ohdataframeco <- ohdataframeco[ohdataframeco$time != 21, ]
+for (x in 0:24) {
+  if (x >= 22  || x <= 5) {
+  } else {
+ ohdataframeco <- ohdataframeco[ohdataframeco$time != x, ] 
+  }
+} 
 
+t.test(rhdataframeco$co, ohdataframeco$co, paired = FALSE)
 ```
+
+#  6. Regression analysis
+
+```{r}
+
+model_0 <- lm(no2gt ~ time, data = dataframeno2)
+summary(model_0)
+
+model_1 <- lm(no2gt ~ time + temperature, data = dataframeno2)
+summary(model_1)
+
+anova(model_0,model_1)
+
+scenario <- data.frame(time = 9, temperature = 14)
+predict(model_1, newdata = scenario, interval = "prediction")
+
+residuals <- residuals(model_1)
+qqnorm(residuals)
+qqline(residuals)
+       
+```
+
+#  7. Time series analysis and forecasting
+
+```{r}
+
+dataframenox$date <- as.Date("2004-03-10") + dataframenox$dayssince
+
+daily_nox <- aggregate(noxgt ~ date, data = dataframenox, FUN = mean)
+
+plot(daily_nox$date, daily_nox$noxgt, 
+     type = "l", 
+     col = "steelblue",
+     xlab = "Days Since Start",
+     ylab = "NOx Concentration (µg/m³)",
+     main = "Daily Average NOx Concentration Over Time",
+     lwd = 1.5)
+lines(lowess(daily_nox$date, daily_nox$noxgt), col = "red", lwd = 2)
+grid()
+
+legend("topright", 
+      legend = c("Daily NOx", "Trend"), 
+      col = c("steelblue", "red"), 
+      lwd = c(1.5, 2))
+
+nox_ts <- ts(daily_nox$noxgt, frequency = 7)
+
+EXP_model <- HoltWinters(nox_ts)
+
+predicted_7day <- predict(EXP_model, n.ahead = 7)
+
+last_actual_date <- max(daily_nox$date)
+forecast_dates <- seq(last_actual_date + 1, by = "day", length.out = 7)
+
+plot(daily_nox$date, daily_nox$noxgt, 
+     type = "l", 
+     col = "steelblue",
+     xlab = "Date", 
+     ylab = "NOx Concentration (µg/m³)",
+     main = "NOx Time Series with 7-Day Forecast",
+     xlim = c(min(daily_nox$date), max(daily_nox$date) + 14),
+     ylim = range(c(daily_nox$noxgt, predicted_7day), na.rm = TRUE))
+
+lines(forecast_dates, predicted_7day, col = "red", lwd = 2)
+
+legend("topright", 
+       legend = c("Observed", "Forecast"), 
+       col = c("steelblue", "red"), 
+       lty = 1, 
+       lwd = 2)
+
+grid()
+
+               
+```
+
+
+
+
+

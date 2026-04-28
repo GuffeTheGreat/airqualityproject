@@ -1,6 +1,0 @@
-"0"," dataframeco <- dataframeco[dataframeco$time >= 0, ] "
-"0"," dataframenox <- dataframenox[dataframenox$time >= 0, ] "
-"0"," dataframeco <- dataframeco[dataframeco$cogt != -200.0, ]"
-"0"," dataframenox <- dataframenox[dataframenox$noxgt != -200.0, ]"
-"0"," dataframeco <- dataframeco[dataframeco$temperature != -200.0, ]"
-"0"," dataframenox <- dataframenox[dataframenox$temperature != -200.0, ]"

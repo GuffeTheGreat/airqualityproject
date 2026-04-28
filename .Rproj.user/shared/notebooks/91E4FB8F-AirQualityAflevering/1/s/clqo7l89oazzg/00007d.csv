@@ -1,2 +1,0 @@
-"0",""
-"0","boxplot(dataframeco$temperature ~ dataframeco$dayssince, xlab = ""Weeks since Start"")"
