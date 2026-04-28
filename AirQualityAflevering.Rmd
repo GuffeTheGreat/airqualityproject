@@ -1,22 +1,20 @@
 ---
-title: "R Notebook"
+title: "Air Quality Exam Project"
 output:
   html_document:
     df_print: paged
   pdf_document: default
 ---
 
-Data Preparation
+# 0. Data Preparation
 
 Loading of the Data
-
 ```{r}
 data <- read.table("AirQualityUCI.csv", header = TRUE, sep = ";",dec = ",")
 
 ```
 
 Construct a dataframe with relevant data.
-
 ```{r}
 dataframeco <- data.frame(
   id = c(0:9470),
@@ -53,21 +51,21 @@ Derive Additional Variable "Days Since". That will denote days since data observ
 ```{r}
  date1string <- "10/03/2004"
    date1 <-  strptime(as.character(date1string), "%d/%m/%Y")
-   resultater <- numeric(nrow(dataframeco))
+   results <- numeric(nrow(dataframeco))
    for (i in 1:nrow(dataframeco)) {
      date2string <- dataframeco$date[i]
      date2 <-  strptime(as.character(date2string), "%d/%m/%Y")
-     resultater[i] <-  difftime(date2,date1, units = "days")
+     results[i] <-  difftime(date2,date1, units = "days")
    }
-   dataframeco$dayssince <- resultater
+   dataframeco$dayssince <- round(results, digits = 0)
    
-   resultater <- numeric(nrow(dataframeno2))
+   results <- numeric(nrow(dataframeno2))
    for (i in 1:nrow(dataframeno2)) {
      date2string <- dataframeno2$date[i]
      date2 <-  strptime(as.character(date2string), "%d/%m/%Y")
-     resultater[i] <-  difftime(date2,date1, units = "days")
+     results[i] <-  difftime(date2,date1, units = "days")
    }
-   dataframeno2$dayssince <- resultater
+   dataframeno2$dayssince <- round(results, digits = 0)
 ```
 
 Restructure time variable
@@ -99,7 +97,8 @@ Update Id
     dataframeno2$id <- ids
 ```
 
-  Quantitative Exploratory Analysis
+ 
+#  1. Quantitative Exploratory Analysis
   
   Selected Variables: NO2 (Nitrogen Dioxide), CO (Carbon Monoxide), Days Since, Time and Temperature
    
@@ -108,8 +107,8 @@ Update Id
 dataframeanal <- data.frame(
   name = c("no","co","dayssince","time","temperatureno","temperatureco"),
   min = c(min(dataframeno2$no2gt),min(dataframeco$cogt),0,0,min(dataframeno2$temperature),min(dataframeco$temperature)),
-  firstqu = c(0,1,2,3,4,5),
-  median = c(0,1,2,3,4,5),
+  #firstqu = c(quantile(dataframeno2$no2gt, probs = seq(0, 1, 0.25)),quantile(dataframeco$cogt, probs = seq(0, 1, 0.25)),2,3,quantile(dataframeno2$temperature, probs = seq(0, 1, 0.25)),quantile(dataframeco$temperature, probs = seq(0, 1, 0.25))),
+  median = c(median(dataframeno2$no2gt),median(dataframeco$cogt),0,0,median(dataframeno2$temperature),median(dataframeco$temperature)),
   mean = c(mean(dataframeno2$no2gt),mean(dataframeco$cogt),0,0,mean(dataframeno2$temperature),mean(dataframeco$temperature)),
   thirdqu = c(0,1,2,3,4,5),
   max = c(max(dataframeno2$no2gt),max(dataframeco$cogt),0,0,max(dataframeno2$temperature),max(dataframeco$temperature))
