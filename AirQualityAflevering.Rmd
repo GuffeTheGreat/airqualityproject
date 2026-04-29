@@ -121,18 +121,42 @@ Update Id
 ```{r}
 
 summary(dataframenox$nox)
-
-summary(dataframeco$co)
-
-summary(dataframenox$temperature)
-
-summary(dataframeco$temperature)
-
-
+var(dataframenox$nox)
+sd(dataframenox$nox)
 
 ```
 
+There range is very big. As the 3rd quantile is 321 and the max is 1479, there are relatively few observations in the more extremely high values. And as the median is lower than the mean that also means that less observations are in the lower half than in the upper one. The difference between minimum-1st quantile, 1st quantile-median, and median-3rd quantile are, however, all relatively similar. All in all, the distribution seems to be quite left-skewed (positive)
+
+```{r}
+
+summary(dataframeco$co)
+var(dataframeco$co)
+sd(dataframeco$co)
+
+```
+
+Interestingly a lot smaller range than for NOx. The situation with max is however very similar to that of Nox, as the difference between 3rd quantile and max is a lot bigger than all other quantile differences. The mean is also higher than the median. Again, this is a left-skewed (positive) distribution. 
+
+
+```{r}
+summary(dataframenox$temperature)
+var(dataframenox$temperature)
+sd(dataframenox$temperature)
+```
+This should be left-skewed again, but less obviously. The difference between 3rd quantile and maximum is still the biggest of all, but the range between minimum and 1st quantile is also quite big. Meaning, the distribution is still left-skewed, but a lot more symmetrical than for NOx and CO. Most observations are close to the median.
+
+```{r}
+
+summary(dataframeco$temperature)
+var(dataframeco$temperature)
+sd(dataframeco$temperature)
+
+```
+
+
 #  2. Visual Exploratory Analysis
+
 
 
 ```{r}
@@ -213,7 +237,19 @@ boxplot.stats(dataframeco$co)
 
 cor(dataframeco$time,dataframeco$co)
 
-plot(dataframeco$time,dataframeco$co)
+plot(dataframeco$time, dataframeco$cogt,
+     main = "CO Concentration vs Time of Day",
+     xlab = "Time of Day (hours)",
+     ylab = "CO Concentration (µg/m³)",
+     col = "steelblue",
+     pch = 16,  # Solid circles
+     cex = 0.5,  # Point size
+     cex.main = 1.2,  # Title size
+     cex.lab = 1.1)  # Label size
+
+# Add grid
+grid(col = "lightgray", lty = "dotted")
+
 
 ```
 
@@ -274,6 +310,9 @@ residuals <- residuals(model_1)
 qqnorm(residuals)
 qqline(residuals)
        
+
+
+
 ```
 
 #  7. Time series analysis and forecasting
