@@ -211,7 +211,13 @@ for (i in names(df_list)) {
 ```
 
 #  3. Outlier detection
-  
+
+We are going to identify if there might be any potential outliers within the CO concentration dataset. This could be CO concentrations that are drastically high or low to the point where the measurements differ significantly from the rest of the dataset. The threshold for what measurements can be considered outliers or not is defined by the following:
+Q1 - 1.5 * IQR
+Q3 + 1.5 * IQR
+The lower bound is defined as the first quartile subtracted by 1.5 times the IQR, inter quantile range, which is the difference between the first and third quartiles. The upper bound is calculated similarly, defined as the third quartile plus 1.5 times the IQR.
+
+The boxplot function in R uses this method to identify outliers when generating a box plot. We will therefore use this function to identify any potential outliers within the CO concentration dataset. The box plot that also gets generated will be helpful for analyzing the outliers after they’ve been identified.
   
 ```{r}
 
@@ -229,6 +235,12 @@ boxplot(dataframeco$co,horizontal = TRUE,
 boxplot.stats(dataframeco$co)
 
 ```
+
+R has identified a number of outliers in the dataset, all exceeding the upper threshold explained earlier. There is a total of 257 outliers, with values ranging from 5.4 to 11.9 µg/m3. These values are quite high considering the median value is 1.8 and the third quartile is 2.8. Looking at both the boxplot above, and the “Distribution of CO” bar chart from section 2, the outliers appear to be distributed quite closely following a curve, with higher values being increasingly less common. This non-irregular distribution resembles the distribution of the rest of the dataset quite closely.
+
+These outlier measurements could be caused by very local releases of CO, such as a plume of smoke from a vehicle, fire or other source. The relatively non-irregular pattern of outliers might, however, contradict this being the source of outlier measurements. Since the measurements were taken in an Italian city, it is also possible this city is located in a valley, where certain weather conditions could trap the pollution of the city and prevent the CO particles from dispersing leading to high measurements. We do, however, not know for sure what has caused these outliers. 
+
+Since the outlier measurements are distributed in a non-irregular manner which conforms relatively well to the distribution pattern of the rest of the dataset, these may not be “true” outliers in the sense that they do not differ significantly from the rest of the dataset. These outliers have simply been flagged as such via the IQR method on account of the values being relatively high. They are therefore worth keeping for further analysis.
 
 #  4. Correlation analysis
 
