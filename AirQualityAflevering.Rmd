@@ -322,17 +322,20 @@ residuals <- residuals(model_1)
 qqnorm(residuals)
 qqline(residuals)
        
+```
+
 Using the command ”lm”, you can create a simple linear regression, with the no2 as our data, and time as our explanatory variable. The resulting linear regression (model_0) becomes no2 =81.67+2.58·time, where 81.67 is the predicted levels of no2 when the time is 0, and 2.58 being the rate that the no2 increases every hour.
 	
 Same thing as the linear regression before, but where time is an added variable, which is added as another explanatory variable. The resulting linear regression (model:1) is now no2 =102.92+2.94·time-1.42·temperature, where our no2 now is predicted to be 102.92, where both the time and temperature is 0.
--	The model (model_1) now has 3 coefficients. Intercept, time and temperature. Our intercept is the value where both the temperature and time are equal to 0. This is the baseline for the linear regression. The time coefficient is the number of units the no2 increases or decreases per hour, no2 in our case it increases with 2.94 no2 The temperature coefficient is how much no2 increases or decreases by each extra degree, in this case it decreases by -1.42 no2.
+
+The model (model_1) now has 3 coefficients. Intercept, time and temperature. Our intercept is the value where both the temperature and time are equal to 0. This is the baseline for the linear regression. The time coefficient is the number of units the no2 increases or decreases per hour, no2 in our case it increases with 2.94 no2 The temperature coefficient is how much no2 increases or decreases by each extra degree, in this case it decreases by -1.42 no2.
 
 The model (model_1) can be assessed using the values given to us by the “anora” command and comparing the two models. The first thing that indicates an improvement is the r2 value has increased from 0.137 to 0.207, which shows that the addition of temperature explains more of the variation. The second indication is that the second model has a decrease of “residual standard error”, from 44.25 to 42.43. The third and biggest indication, is the P value given to the second model by the “anora” command. It shows that the p value is 2.773102e-137 which means that the result of the model is very unlikely to be caused by chance, which makes the variable statistically significant.
 
 Using the “predict” command, the model will predict the levels of no2, with a specific value set to the explanatory variables. In this example the time is set to 9 and our temperature is set to 14. Using those variables, the model predicted the no2 to be 109.46, with the predicted intervals to be [26.28,192.65]
 
 
-```
+
 
 #  7. Time series analysis and forecasting
 
