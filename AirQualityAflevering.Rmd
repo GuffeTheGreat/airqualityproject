@@ -210,6 +210,24 @@ for (i in names(df_list)) {
  
 ```
 
+
+The following plots show frequencies of observations as well as weekly differences in temperature and particle concentrations for CO and NOx. 
+
+The distribution of CO is indeed very left-skewed with most observations being around 1 or 2 µg/m3. From around a concentration of 1, the frequency goes downwards exponential-like. Very few observations are in the  upper half of the range. 
+
+The weekly CO distribution have only few and quite small trends. The IQR is relatively even in most weeks, however there seems to be a slight spike around the winter months. This is probably due to more people heating up their houses or choosing to move by car in these months. The plot also shows a relatively high number of outliers. 
+
+The temperature distribution (CO) is relatively symmetrical and doesn't look too far from a normal distribution. As described in 1), it is however slightly left-skewed. The most frequent tempatures are between 12 and 14 degrees. 
+
+The weekly temperature distribution (CO) shows very few anomalies. Most of the weekly box plots have no outliers, and each box plot has a relatively small ranges, especially considering observations were made during both night- and daytime. The box plots show a general pattern of what you would expect from temperatures across a year with four seasons in Italy. 
+
+The frequency distribution of NOx looks very similar to that of CO, however, as mentioned in 1), with a significantly bigger range. A very left-skewed distribution indeed. 
+
+This looks roughly similar to the weekly CO distribution, but with a more significant spike during the winter months. Also, the spike comes quite suddenly around the beginning of september, and the medians of the box plots don't decrease significantly again for the spring of 2025. We can't seem to find a good cause for this. The volcano of Etna erupted quite exactly when the sudden increase in NOx-level comes, but it shouldn't have made a noteworthy difference.
+Similarly to CO, there are a lot of outliers in the weekly distribution.
+
+The frequency distribution and grouped box plot for temperature (NOx) is almost identical to those of CO for the reason described in 1) and thus won't be discussed further.
+
 #  3. Outlier detection
 
 We are going to identify if there might be any potential outliers within the CO concentration dataset. This could be CO concentrations that are drastically high or low to the point where the measurements differ significantly from the rest of the dataset. The threshold for what measurements can be considered outliers or not is defined by the following:
