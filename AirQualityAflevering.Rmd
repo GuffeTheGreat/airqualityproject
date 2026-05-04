@@ -265,6 +265,17 @@ grid(col = "lightgray", lty = "dotted")
 
 ```
 
+Shown on this scatterplot that the concentration of carbon monoxide (CO) drops from about 5-6 μg/m3 at midnight to an low of 
+about 3 μg/m3 , from there it takes a step rise till 9 AM, with a maximum about 8 μg/m3 from there it drops to about 6 μg/m3 
+and stays flat till 4 PM when it again rises till the maximum concentration of 10 μg/m3 at 6 PM, after it drops till allow 
+about 5 μg/m3 at 11 PM. 
+The data shown notably gives a good sense of the top abound observed, and there by shows and trend of peaks concentration 
+around morning rush out a in the early evening. It also shows outliers, eg. The outliers in the early morning hours was 2 
+μg/m3  higher what is expected and the two outliers at 7 and 8 PM where the concentration is about 12 μg/m3 .  
+
+
+
+
 #  5. Statistical testing
 
 ```{r}
